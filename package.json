@@ -1,0 +1,19 @@
+{
+  "name": "birja",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "db-migrate": "^0.11.1",
+    "express": "^4.16.3",
+    "jayson": "^2.0.6",
+    "ripple-lib": "^1.0.0-beta.1",
+    "socket.io": "^2.1.1",
+    "zcash-bitcore-lib": "^0.13.20-rc3"
+  }
+}
