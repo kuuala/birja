@@ -21,11 +21,11 @@ app.get('/', function (request, response) {
 app.post("/follownewtransaction", urlencodedParser, function (request, response) {
     if(!request.body) return response.sendStatus(400);
     console.log(request.body);
-    /*db.query(`INSERT into transactions VALUES ('${request.body.ID}', '${request.body.transaction}')`, (err) => {
+    db.query(`INSERT into transactions VALUES ('${request.body.ID}', '${request.body.transaction}')`, (err) => {
         if (err) {
             throw err;
         }
-    });*/
+    });
     response.sendFile(__dirname + '/index.html');
 });
 

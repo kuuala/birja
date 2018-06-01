@@ -8,11 +8,11 @@ db.connect(function(err) {
 module.exports = class checker{
     static bitcoin_check(bitcoin_client, currency) {
         let last_checked_block;
-        db.query(`SELECT last_block FROM last_checked_block WHERE currency = ${currency}`, (err, res) => {
+        db.query(`SELECT last_block FROM last_checked_block WHERE currency = '${currency}'`, (err, res) => {
             if (err){
                 throw err;
             }
-            last_checked_block = res[0]['last_block'].toInteger();
+            last_checked_block = res[0]['last_block'];
         });
         bitcoin_client.get_block_count()
             .then((data) => {
@@ -32,7 +32,7 @@ module.exports = class checker{
                                     });
                                 });
                             ++last_checked_block;
-                            db.query(`UPDATE last_checked_block SET last_block = ${last_checked_block} WHERE currency = ${currency}`, (err) => {
+                            db.query(`UPDATE last_checked_block SET last_block = ${last_checked_block} WHERE currency = '${currency}'`, (err) => {
                                 if (err){
                                     throw err;
                                 }
@@ -46,11 +46,11 @@ module.exports = class checker{
 
     static ethereum_check(ethereum_client, currency) {
         let last_checked_block;
-        db.query(`SELECT last_block FROM last_checked_block WHERE currency = ${currency}`, (err, res) => {
+        db.query(`SELECT last_block FROM last_checked_block WHERE currency = '${currency}'`, (err, res) => {
             if (err){
                 throw err;
             }
-            last_checked_block = res[0]['last_block'].toInteger();
+            last_checked_block = res[0]['last_block'];
         });
         ethereum_client.get_block_number()
             .then((data) => {
@@ -63,7 +63,7 @@ module.exports = class checker{
                             });
                         });
                     ++last_checked_block;
-                    db.query(`UPDATE last_checked_block SET last_block = ${last_checked_block} WHERE currency = ${currency}`, (err) => {
+                    db.query(`UPDATE last_checked_block SET last_block = ${last_checked_block} WHERE currency = '${currency}'`, (err) => {
                         if (err){
                             throw err;
                         }
