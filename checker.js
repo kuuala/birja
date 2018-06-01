@@ -1,3 +1,4 @@
+let server = require('./server').all_clients;
 const db = require('./config').db;
 db.connect(function(err) {
     if (err) {
