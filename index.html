@@ -1,8 +1,29 @@
 <script src="http://localhost:1309/socket.io/socket.io.js"></script>
 <script>
-    var socket = io.connect('http://localhost:1309');
+    let socket = io.connect('http://localhost:1309');
     socket.on('news', function (data) {
         console.log(data);
         socket.emit('my other event', { my: 'data' });
     });
 </script>
+<html>
+<body>
+    <div>
+        <form action="/follownewtransaction" method="post">
+            <label>
+                Your ID
+                <input name="ID" type="text">
+            </label>
+            <br>
+            <br>
+            <label>
+                Transaction
+                <input name="transaction" type="text">
+            </label>
+            <button type="submit">
+                Follow
+            </button>
+        </form>
+    </div>
+</body>
+</html>

@@ -4,21 +4,6 @@ const checker = require('./checker');
 const bitcoin = require('./bitcoin');
 const ethereum = require('./etheteum');
 const ripple = require('./ripple');
-const mysql = require('mysql');
-let db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '1234',
-    database: 'transactions_notification'
-});
-
-db.connect(function(err) {
-    if (err) {
-        throw err;
-    }
-});
-
-module.exports = db;
 
 function check(){
     wallets.forEach(function(elem){

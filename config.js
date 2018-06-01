@@ -1,3 +1,4 @@
+const mysql = require('mysql');
 class crypto_config {
     constructor(name, connection, type){
         this.name = name;
@@ -9,3 +10,10 @@ class crypto_config {
 module.exports.wallets = [
     new crypto_config('zcash', 'http://username:12341234@127.0.0.1:8089', 'btc')
 ];
+
+module.exports.db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '1234',
+    database: 'transactions_notification'
+});

@@ -1,4 +1,9 @@
-const db = require('./block_checker').db;
+const db = require('./config').db;
+db.connect(function(err) {
+    if (err) {
+        throw err;
+    }
+});
 
 module.exports = class checker{
     static bitcoin_check(bitcoin_client, currency) {
@@ -17,7 +22,7 @@ module.exports = class checker{
                             bitcoin_client.get_block(hash_block.result)
                                 .then((block_info) => {
                                     block_info.result.tx.forEach(function(element){
-                                        bitcoin_client.get_raw_transaction(element)
+                                        bitcoin_client.get_transaction(element)
                                             .then((transaction) => {
                                                 console.log(transaction.result.toString());
                                             })
