@@ -46,6 +46,9 @@ module.exports = class checker{
                                                 console.log(error);
                                             });
                                     });
+                                })
+                                .catch((error) => {
+                                    console.log(error);
                                 });
                             ++last_checked_block;
                             db.query(`UPDATE last_checked_block SET last_block = ${last_checked_block} WHERE currency = '${currency}'`, (err) => {
@@ -53,10 +56,16 @@ module.exports = class checker{
                                     throw err;
                                 }
                             });
+                        })
+                        .catch((error) => {
+                            console.log(error);
                         });
                 } else {
                     console.log('no new bitcoin blocks');
                 }
+            })
+            .catch((error) => {
+                console.log(error);
             });
     };
 
@@ -84,6 +93,9 @@ module.exports = class checker{
                                     })
                                 })
                             });
+                        })
+                        .catch((error) => {
+                            console.log(error);
                         });
                     ++last_checked_block;
                     db.query(`UPDATE last_checked_block SET last_block = ${last_checked_block} WHERE currency = '${currency}'`, (err) => {
@@ -94,6 +106,9 @@ module.exports = class checker{
                 } else {
                     console.log('no new ethereum blocks');
                 }
+            })
+            .catch((error) => {
+                console.log(error);
             });
     };
 
