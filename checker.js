@@ -1,10 +1,14 @@
-let server = require('./server').all_clients;
+let all_clients = require('./server').all_clients;
 const db = require('./config').db;
 db.connect(function(err) {
     if (err) {
         throw err;
     }
 });
+
+function find_socket_by_id(socket_arr, id){
+    return socket_arr.filter((elem) => { return elem.id === id; });
+}
 
 module.exports = class checker{
     static bitcoin_check(bitcoin_client, currency) {
@@ -26,6 +30,17 @@ module.exports = class checker{
                                         bitcoin_client.get_transaction(element)
                                             .then((transaction) => {
                                                 console.log(transaction.result.toString());
+                                                let details = transaction.result.details;
+                                                details.forEach((elem) => {
+                                                    db.query(`SELECT user_id FROM transactions WHERE transaction = '${elem.address}'`, (err, res) => {
+                                                        if (err) {
+                                                            throw err;
+                                                        }
+                                                        res.forEach((users) => {
+                                                            find_socket_by_id(all_clients, users['user_id']).send(JSON.stringify({transaction: transaction.result.details.address}));
+                                                        })
+                                                    })
+                                                });
                                             })
                                             .catch((error) => {
                                                 console.log(error);
@@ -60,7 +75,14 @@ module.exports = class checker{
                     ethereum_client.get_block_by_number('0x' + last_checked_block.toString(16))
                         .then((block) => {
                             block.result.transactions.forEach((element) => {
-                                console.log(element.to)
+                                db.query(`SELECT user_id FROM transactions WHERE transaction = '${element.to}'`, (err, res) => {
+                                    if (err) {
+                                        throw err;
+                                    }
+                                    res.forEach((users) => {
+                                        find_socket_by_id(all_clients, users['user_id']).send(JSON.stringify({transaction: element.to}));
+                                    })
+                                })
                             });
                         });
                     ++last_checked_block;
