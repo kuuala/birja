@@ -114,5 +114,13 @@ module.exports = class checker{
 
     static ripple_check(ripple_client) {
 
+        /*db.query(`SELECT user_id FROM transactions WHERE transaction = '${transaction.destination.address}'`, (err, res) => {
+            if (err) {
+                console.error(err);
+            }
+            res.forEach((users) => {
+                find_socket_by_id(all_clients, users['user_id']).send(JSON.stringify({transaction: transaction.destination.address}));
+            })
+        })*/
     };
 };
