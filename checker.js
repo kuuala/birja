@@ -15,7 +15,7 @@ module.exports = class checker{
         let last_checked_block;
         db.query(`SELECT last_block FROM last_checked_block WHERE currency = '${currency}'`, (err, res) => {
             if (err){
-                throw err;
+                console.error(err);
             }
             last_checked_block = res[0]['last_block'];
         });
@@ -34,7 +34,7 @@ module.exports = class checker{
                                                 details.forEach((elem) => {
                                                     db.query(`SELECT user_id FROM transactions WHERE transaction = '${elem.address}'`, (err, res) => {
                                                         if (err) {
-                                                            throw err;
+                                                            console.error(err);
                                                         }
                                                         res.forEach((users) => {
                                                             find_socket_by_id(all_clients, users['user_id']).send(JSON.stringify({transaction: transaction.result.details.address}));
@@ -43,29 +43,29 @@ module.exports = class checker{
                                                 });
                                             })
                                             .catch((error) => {
-                                                console.log(error);
+                                                console.error(error);
                                             });
                                     });
                                 })
                                 .catch((error) => {
-                                    console.log(error);
+                                    console.error(error);
                                 });
                             ++last_checked_block;
                             db.query(`UPDATE last_checked_block SET last_block = ${last_checked_block} WHERE currency = '${currency}'`, (err) => {
                                 if (err){
-                                    throw err;
+                                    console.error(err);
                                 }
                             });
                         })
                         .catch((error) => {
-                            console.log(error);
+                            console.error(error);
                         });
                 } else {
                     console.log('no new bitcoin blocks');
                 }
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
     };
 
@@ -73,7 +73,7 @@ module.exports = class checker{
         let last_checked_block;
         db.query(`SELECT last_block FROM last_checked_block WHERE currency = '${currency}'`, (err, res) => {
             if (err){
-                throw err;
+                console.error(err);
             }
             last_checked_block = res[0]['last_block'];
         });
@@ -86,7 +86,7 @@ module.exports = class checker{
                             block.result.transactions.forEach((element) => {
                                 db.query(`SELECT user_id FROM transactions WHERE transaction = '${element.to}'`, (err, res) => {
                                     if (err) {
-                                        throw err;
+                                        console.error(err);
                                     }
                                     res.forEach((users) => {
                                         find_socket_by_id(all_clients, users['user_id']).send(JSON.stringify({transaction: element.to}));
@@ -95,12 +95,12 @@ module.exports = class checker{
                             });
                         })
                         .catch((error) => {
-                            console.log(error);
+                            console.error(error);
                         });
                     ++last_checked_block;
                     db.query(`UPDATE last_checked_block SET last_block = ${last_checked_block} WHERE currency = '${currency}'`, (err) => {
                         if (err){
-                            throw err;
+                            console.error(err);
                         }
                     });
                 } else {
@@ -108,11 +108,11 @@ module.exports = class checker{
                 }
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
     };
 
     static ripple_check(ripple_client) {
-        // in progress
+
     };
 };

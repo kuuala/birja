@@ -5,4 +5,5 @@ module.exports = class ripple {
     constructor(client) {
         this.client = client;
     }
+
 };
