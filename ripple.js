@@ -10,6 +10,20 @@ module.exports = class ripple {
         });
     }
 
-    
+    connect(){
+        return this.client.connect();
+    }
+
+    ledger_version() {
+        return this.client.getLedgerVersion();
+    }
+
+    get_ledger(optional_object) {
+        return this.client.getLedger(optional_object);
+    }
+
+    get_transactions(id, options = null) {
+        return this.client.getTransaction(id, options);
+    }
 
 };
