@@ -1,10 +1,6 @@
-let all_clients = require('./server').all_clients;
 const db = require('./config').db;
-db.connect(function(error) {
-    if (error) {
-        throw error;
-    }
-});
+let redis = require("redis");
+let client = redis.createClient();
 
 function find_socket_by_id(socket_arr, id){
     return socket_arr.filter((elem) => { return elem.id === id; });
@@ -12,6 +8,8 @@ function find_socket_by_id(socket_arr, id){
 
 module.exports = class checker{
     static bitcoin_check(bitcoin_client, currency) {
+        let all_clients = [];
+        // all_client initial from redis
         let last_checked_block;
         db.query(`SELECT last_block FROM last_checked_block WHERE currency = '${currency}'`, (error, result) => {
             if (error){
