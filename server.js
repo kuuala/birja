@@ -2,20 +2,16 @@ const port = 1312;
 const io = require('socket.io')(port);
 const db = require('./config').db;
 let redis = require("redis");
-let client = redis.createClient();
+let sub = redis.createClient();
 let all_clients = [];
+sub.subscribe('test_channel');
 
 io.on('connection', function (socket) {
     all_clients.push(socket);
-    client.rpush.apply(client, ['test'].concat(JSON.stringify(socket)));
     console.log(socket.id);
     socket.on('disconnect', function() {
         let i = all_clients.indexOf(socket);
         all_clients.splice(i, 1);
-        client.del(client, ['test']);
-        all_clients.forEach((element) => {
-            client.rpush.apply(client, ['test'].concat(JSON.stringify(element)));
-        });
         db.query(`DELETE FROM transactions WHERE user_id = '${socket.id}'`, (error) => {
             if (error) {
                 console.error(error);
@@ -29,6 +25,13 @@ io.on('connection', function (socket) {
                 console.error(error);
             }
         });
-        console.log(socket.id, JSON.parse(message));
     });
+
+    sub.on('message', (channel, message) => {
+        if (channel === 'test_channel') {
+            console.log(message, socket.id);
+            console.log(all_clients.length);
+            socket.send(message);
+        }
+    })
 });
