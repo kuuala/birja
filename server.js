@@ -1,7 +1,7 @@
 const port = 1312;
 const io = require('socket.io')(port);
 const db = require('./config').db;
-let redis = require("redis");
+let redis = require('redis');
 let sub = redis.createClient();
 sub.subscribe('test_channel');
 

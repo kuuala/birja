@@ -2,17 +2,17 @@ const jayson = require('jayson/promise');
 const wallets = require('./config').wallets;
 const checker = require('./checker');
 const bitcoin = require('./bitcoin');
-const ethereum = require('./etheteum');
+const ethereum = require('./ethereum');
 const ripple = require('./ripple');
 
 function check(){
     wallets.forEach(function(elem){
         switch (elem.type){
             case 'eth':
-                checker.ethereum_check(new ethereum(jayson.client.http(elem.connection), elem.name));
+                checker.ethereum_check(new ethereum(jayson.client.http(elem.connection)), elem.name);
                 break;
             case 'btc':
-                checker.bitcoin_check(new bitcoin(jayson.client.http(elem.connection), elem.name));
+                checker.bitcoin_check(new bitcoin(jayson.client.http(elem.connection)), elem.name);
                 break;
             case 'xrp':
                 checker.ripple_check(new ripple(elem.connection), elem.name);
@@ -24,4 +24,4 @@ function check(){
     });
 }
 
-setInterval(check, 5000);
+setInterval(check, 10000);

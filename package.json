@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "db-migrate": "^0.11.1",
+    "esm": "^3.0.48",
     "jayson": "^2.0.6",
     "redis": "^2.8.0",
     "ripple-lib": "^1.0.0-beta.1",
