@@ -18,4 +18,8 @@ module.exports = class bitcoin {
     get_transaction(element) {
         return this.client.request('gettransaction', [element]);
     }
+
+    import_address(address) {
+        return this.client.request('importaddress', [address]);
+    }
 };

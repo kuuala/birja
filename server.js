@@ -28,5 +28,5 @@ io.on('connection', function (socket) {
         if ((channel === 'test_channel') && (socket.id === mess.id_socket)) {
             socket.send(mess.transaction);
         }
-    })
+    });
 });
