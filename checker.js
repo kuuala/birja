@@ -121,13 +121,25 @@ module.exports = class checker{
                         ripple_client.ledger_version()
                             .then((ledger_version) => {
                                 if (ledger_version >= checked_ledger_version) {
+                                    console.log(ledger_version);
                                     let options = {
                                         includeTransactions: true,
-                                        ledgerVersion: checked_ledger_version
+                                        ledgerVersion: 10
                                     };
                                     ripple_client.get_ledger(options)
                                         .then((data) => {
-                                            data.transactions.forEach((transaction) => {
+                                            data.forEach((transaction_id) => {
+                                                ripple_client.get_transactions(transaction_id)
+                                                    .then((data) => {
+
+                                                    })
+                                                    .catch((error) => {
+                                                        console.error(error);
+                                                    })
+                                            });
+
+                                            //console.log(data);
+                                            /*data.transactions.forEach((transaction) => {
                                                 db.query(`SELECT user_id FROM transactions WHERE transaction = '${transaction.specification.destination.address}'`, (error, result) => {
                                                     if (error) {
                                                         console.error(error);
@@ -137,7 +149,7 @@ module.exports = class checker{
                                                         });
                                                     }
                                                 });
-                                            });
+                                            });*/
                                         })
                                         .catch((error) => {
                                             console.error(error);

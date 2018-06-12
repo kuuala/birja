@@ -8,9 +8,9 @@ class crypto_config {
 }
 
 module.exports.wallets = [
-    new crypto_config('zcash', 'http://username:12341234@127.0.0.1:8089', 'btc'),
-    //new crypto_config('ripple', 'wss://s.altnet.rippletest.net:51233', 'xrp'),
-    //new crypto_config('ethereum', 'http://localhost:8545', 'eth')
+    // new crypto_config('zcash', 'http://username:12341234@127.0.0.1:8089', 'btc'),
+    new crypto_config('ripple', 'wss://s2.ripple.com', 'xrp'),
+    // new crypto_config('ethereum', 'http://localhost:8545', 'eth')
 ];
 
 module.exports.db = mysql.createConnection({

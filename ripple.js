@@ -25,5 +25,4 @@ module.exports = class ripple {
     get_transactions(id, options = null) {
         return this.client.getTransaction(id, options);
     }
-
 };
