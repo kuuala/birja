@@ -7,7 +7,7 @@ module.exports = class ethereum {
         return this.client.request('eth_blockNumber', []);
     }
 
-    get_block_by_number(hash, full_info = true) {
-        return this.client.request('eth_getBlockByNumber', [hash, full_info]);
+    get_block_by_number(hash, full_inf = true) {
+        return this.client.request('eth_getBlockByNumber', [hash, full_inf]);
     }
 };
