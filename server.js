@@ -26,7 +26,7 @@ io.on('connection', function (socket) {
     sub.on('message', (channel, message) => {
         let mess = JSON.parse(message);
         if ((channel === 'test_channel') && (socket.id === mess.id_socket)) {
-            socket.send(mess.transaction);
+            socket.send({address: mess.transaction, txid: mess.txid});
         }
     });
 });

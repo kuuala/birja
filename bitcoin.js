@@ -15,8 +15,8 @@ module.exports = class bitcoin {
         return this.client.request('getblock', [hash]);
     }
 
-    get_transaction(element) {
-        return this.client.request('gettransaction', [element]);
+    get_raw_transaction(element) {
+        return this.client.request('getrawtransaction', [element, 1]);
     }
 
     import_address(address) {

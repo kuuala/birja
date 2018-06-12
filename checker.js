@@ -5,78 +5,63 @@ let pub = redis.createClient();
 module.exports = class checker{
     
     static bitcoin_check(bitcoin_client, currency) {
-        db.query('SELECT transaction FROM transactions', (error, result) => {
-            if (error) {
+       db.query(`SELECT last_block FROM last_checked_block WHERE currency = '${currency}'`, (error, result) => {
+            if (error){
                 console.error(error);
             } else {
-                result.forEach((element) => { 
-                    bitcoin_client.import_address(element['transaction'])
-                        .then(() => {
-                            db.query(`SELECT last_block FROM last_checked_block WHERE currency = '${currency}'`, (error, result) => {
-                                if (error){
-                                    console.error(error);
-                                } else {
-                                    let last_checked_block = result[0]['last_block'];
-                                    bitcoin_client.get_block_count()
-                                        .then((data) => {
-                                            if (data.result >= last_checked_block) {
-                                                bitcoin_client.get_block_hash(last_checked_block)
-                                                    .then((hash_block) => {
-                                                        bitcoin_client.get_block(hash_block.result)
-                                                            .then((block_info) => {
-                                                                block_info.result.tx.forEach(function(element){
-                                                                    console.log(last_checked_block, element);
-                                                                    bitcoin_client.get_transaction(element)
-                                                                        .then((transaction) => {
-                                                                            // in next string we send object to ws client but details = []
-                                                                            //pub.publish('test_channel', JSON.stringify({id_socket: 'VBnV7RSXiV04VebLAAAA', transaction: transaction}));
-                                                                            // details = [] :(
-                                                                            let details = transaction.result.details;
-                                                                            details.forEach((elem) => {
-                                                                                db.query(`SELECT user_id FROM transactions WHERE transaction = '${elem.address}'`, (error, result) => {
-                                                                                    if (error) {
-                                                                                        console.error(error);
-                                                                                    } else {
-                                                                                        сonsole.log(result);
-                                                                                        result.forEach((users) => {
-                                                                                            pub.publish('test_channel', JSON.stringify({id_socket: users['user_id'], transaction: elem.address}));
-                                                                                        });
-                                                                                    }
-                                                                                });
-                                                                            });
-                                                                        })
-                                                                        .catch((error) => {
-                                                                            console.error(error);
+                let last_checked_block = result[0]['last_block'];
+                bitcoin_client.get_block_count()
+                    .then((data) => {
+                        if (data.result >= last_checked_block) {
+                            bitcoin_client.get_block_hash(last_checked_block)
+                                .then((hash_block) => {
+                                    bitcoin_client.get_block(hash_block.result)
+                                        .then((block_info) => {
+                                            block_info.result.tx.forEach((element) => {
+                                                bitcoin_client.get_raw_transaction(element)
+                                                    .then((transaction) => {
+                                                        let details = transaction.result.vout;
+                                                        let txid = transaction.result.txid
+                                                        details.forEach((elem) => {
+                                                            let addresses = elem.scriptPubKey.addresses;
+                                                            addresses.forEach((address) => {
+                                                                db.query(`SELECT user_id FROM transactions WHERE transaction = '${address}'`, (error, result) => {
+                                                                    if (error) {
+                                                                        console.error(error);
+                                                                    } else {
+                                                                        result.forEach((users) => {
+                                                                            pub.publish('test_channel', JSON.stringify({id_socket: users['user_id'], transaction: address, txid: txid}));
                                                                         });
+                                                                    }
                                                                 });
-                                                            })
-                                                            .catch((error) => {
-                                                                console.error(error);
                                                             });
-                                                        ++last_checked_block;
-                                                        db.query(`UPDATE last_checked_block SET last_block = ${last_checked_block} WHERE currency = '${currency}'`, (error) => {
-                                                            if (error){
-                                                                console.error(error);
-                                                            }
                                                         });
                                                     })
                                                     .catch((error) => {
                                                         console.error(error);
                                                     });
-                                            } else {
-                                                console.log('no new bitcoin blocks');
-                                            }
+                                            });
                                         })
                                         .catch((error) => {
                                             console.error(error);
                                         });
-                                }
-                            });
-                        })
-                        .catch((error) => {
-                            console.error(error);
-                        });
-                });
+                                    ++last_checked_block;
+                                    db.query(`UPDATE last_checked_block SET last_block = ${last_checked_block} WHERE currency = '${currency}'`, (error) => {
+                                        if (error){
+                                            console.error(error);
+                                        }
+                                    });
+                                })
+                                .catch((error) => {
+                                    console.error(error);
+                                });
+                        } else {
+                            console.log('no new bitcoin blocks');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
             }
         });
     };
@@ -99,7 +84,7 @@ module.exports = class checker{
                                                 console.error(error);
                                             } else {
                                                 result.forEach((users) => {
-                                                    pub.publish('test_channel', JSON.stringify({id_socket: users, transaction: element.to}));
+                                                    pub.publish('test_channel', JSON.stringify({id_socket: users['user_id'], info: {transaction: element.to, hash: element.hash}}));
                                                 });
                                             }
                                         });
@@ -148,7 +133,7 @@ module.exports = class checker{
                                                         console.error(error);
                                                     } else {
                                                         result.forEach((users) => {
-                                                            pub.publish('test_channel', JSON.stringify({id_socket: users, transaction: transaction.specification.destination.address}));
+                                                            pub.publish('test_channel', JSON.stringify({id_socket: users['user_id'], info: {transaction: transaction.specification.destination.address, hash: {}}}));
                                                         });
                                                     }
                                                 });

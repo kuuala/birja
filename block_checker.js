@@ -24,4 +24,4 @@ function check(){
     });
 }
 
-setInterval(check, 10000);
+setInterval(check, 5000);
