@@ -14,9 +14,6 @@ function check(){
             case 'btc':
                 checker.bitcoin_check(new bitcoin(jayson.client.http(elem.connection)), elem.name);
                 break;
-            case 'xrp':
-                checker.ripple_check(new ripple(elem.connection), elem.name);
-                break;
             default:
                 console.error('error wallet type in ' + elem.name);
                 break;

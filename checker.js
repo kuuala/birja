@@ -21,7 +21,7 @@ module.exports = class checker{
                                                 bitcoin_client.get_raw_transaction(element)
                                                     .then((transaction) => {
                                                         let details = transaction.result.vout;
-                                                        let txid = transaction.result.txid
+                                                        let txid = transaction.result.txid;
                                                         details.forEach((elem) => {
                                                             let addresses = elem.scriptPubKey.addresses;
                                                             addresses.forEach((address) => {
@@ -84,7 +84,7 @@ module.exports = class checker{
                                                 console.error(error);
                                             } else {
                                                 result.forEach((users) => {
-                                                    pub.publish('test_channel', JSON.stringify({id_socket: users['user_id'], info: {transaction: element.to, hash: element.hash}}));
+                                                    pub.publish('test_channel', JSON.stringify({id_socket: users['user_id'], transaction: element.to, txid: element.hash}));
                                                 });
                                             }
                                         });
@@ -102,69 +102,6 @@ module.exports = class checker{
                         } else {
                             console.log('no new ethereum blocks');
                         }
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
-            }
-        });
-    };
-
-    static ripple_check(ripple_client, currency) {
-        db.query(`SELECT last_block FROM last_checked_block WHERE currency = '${currency}'`, (error, result) => {
-            if (error) {
-                console.error(error);
-            } else {
-                let checked_ledger_version = result[0]['last_block'];
-                ripple_client.connect()
-                    .then(() => {
-                        ripple_client.ledger_version()
-                            .then((ledger_version) => {
-                                if (ledger_version >= checked_ledger_version) {
-                                    console.log(ledger_version);
-                                    let options = {
-                                        includeTransactions: true,
-                                        ledgerVersion: 10
-                                    };
-                                    ripple_client.get_ledger(options)
-                                        .then((data) => {
-                                            data.forEach((transaction_id) => {
-                                                ripple_client.get_transactions(transaction_id)
-                                                    .then((data) => {
-
-                                                    })
-                                                    .catch((error) => {
-                                                        console.error(error);
-                                                    })
-                                            });
-
-                                            //console.log(data);
-                                            /*data.transactions.forEach((transaction) => {
-                                                db.query(`SELECT user_id FROM transactions WHERE transaction = '${transaction.specification.destination.address}'`, (error, result) => {
-                                                    if (error) {
-                                                        console.error(error);
-                                                    } else {
-                                                        result.forEach((users) => {
-                                                            pub.publish('test_channel', JSON.stringify({id_socket: users['user_id'], info: {transaction: transaction.specification.destination.address, hash: {}}}));
-                                                        });
-                                                    }
-                                                });
-                                            });*/
-                                        })
-                                        .catch((error) => {
-                                            console.error(error);
-                                        });
-                                    ++checked_ledger_version;
-                                    db.query(`UPDATE last_checked_block SET last_block = ${checked_ledger_version} WHERE currency = '${currency}'`, (error) => {
-                                        if (error){
-                                            console.error(error);
-                                        }
-                                    });
-                                }
-                            })
-                            .catch((error) => {
-                                console.error(error);
-                            });
                     })
                     .catch((error) => {
                         console.error(error);
