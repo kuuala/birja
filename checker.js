@@ -55,8 +55,6 @@ module.exports = class checker{
                                 .catch((error) => {
                                     console.error(error);
                                 });
-                        } else {
-                            console.log('no new bitcoin blocks');
                         }
                     })
                     .catch((error) => {
@@ -99,8 +97,6 @@ module.exports = class checker{
                                     console.error(error);
                                 }
                             });
-                        } else {
-                            console.log('no new ethereum blocks');
                         }
                     })
                     .catch((error) => {

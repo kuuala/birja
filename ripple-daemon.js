@@ -33,7 +33,6 @@ api.on('ledger', (ledger) =>{
             data.transactionHashes.forEach((transaction) => {
                 api.getTransaction(transaction)
                     .then((data) => {
-                        console.log(data.address);
                         db.query(`SELECT user_id FROM transactions WHERE transaction = '${data.address}'`, (error, result) => {
                             if (error) {
                                 console.error(error);
